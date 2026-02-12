@@ -25,7 +25,26 @@ current_time = now.strftime("%d-%m-%Y %I:%M %p")
 today_date = now.date()
 
 # Page Setup
-st.set_page_config(page_title="CAR MELA", page_icon="🚗", layout="wide")
+st.set_page_config(page_title="CAR MELA", page_icon="🚗", layout="centered")
+
+# Custom CSS for Small Boxes and Centering
+st.markdown("""
+    <style>
+    /* Main container width control */
+    .block-container {
+        max-width: 800px !important;
+        padding-top: 2rem !important;
+    }
+    /* Input box size control */
+    .stTextInput input, .stNumberInput input {
+        height: 35px !important;
+    }
+    /* Label font size */
+    .stMarkdown p {
+        font-size: 14px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # Session State for Payment Lock
 if 'paid' not in st.session_state:
@@ -46,32 +65,29 @@ if not st.session_state['paid']:
     
     with col_a:
         st.info("💰 **Subscription Amount: ₹499 / Month**")
-        # UPI QR Generation for Payment
         upi_url = f"upi://pay?pa={MY_UPI_ID}&pn=CAR%20MELA&am=499&cu=INR"
         pay_qr = qrcode.make(upi_url)
         pay_buf = io.BytesIO()
         pay_qr.save(pay_buf, format='PNG')
-        st.image(pay_buf, caption="Scan and Pay ₹499 to Unlock", width=250)
+        st.image(pay_buf, caption="Scan and Pay ₹499 to Unlock", width=200)
 
     with col_b:
         st.subheader("Activation Steps:")
         st.write("1️⃣ QR Scan karke ₹499 pay karein.")
-        st.write("2️⃣ Niche diye gaye button par click karke screenshot bhejein.")
+        st.write("2️⃣ Screenshot WhatsApp par bhejein.")
         
-        # WhatsApp Link
         msg = "Sir, maine CAR MELA app ke liye ₹499 pay kar diye hain. Please mujhe Access Key bhej dijiye."
         wa_url = f"https://wa.me/{MY_WHATSAPP}?text={msg.replace(' ', '%20')}"
         
         st.markdown(f"""
             <a href="{wa_url}" target="_blank">
-                <button style="background-color: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">
-                    ✅ WhatsApp Screenshot & Get Key
+                <button style="background-color: #25D366; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">
+                    ✅ WhatsApp Screenshot
                 </button>
             </a>
         """, unsafe_allow_html=True)
         
         st.markdown("---")
-        st.write("3️⃣ Key milne ke baad yahan dalein:")
         key_input = st.text_input("Enter Access Key", type="password", placeholder="Yahan Key bharein...")
         
         if st.button("Unlock Calculator Now 🚀"):
@@ -79,20 +95,17 @@ if not st.session_state['paid']:
                 st.error("Access Denied: Key has Expired!")
             elif key_input == SECRET_ACCESS_KEY:
                 st.session_state['paid'] = True
-                st.success("Access Granted! Loading...")
+                st.success("Access Granted!")
                 st.rerun()
             else:
-                st.error("Galat Key! Kripya sahi key dalein.")
+                st.error("Galat Key!")
 
 # --- 2. MAIN APP CONTENT (Unlocked) ---
 else:
-    # --- PREMIUM INTERFACE (CSS) ---
     st.markdown("""
         <style>
-        section[data-testid="stSidebar"] { width: 240px !important; }
-        .main .block-container { padding-top: 1.5rem; padding-bottom: 1rem; }
         .stApp { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
-        h1 { color: #1e3d59 !important; text-align: center; margin-bottom: 0px; }
+        h1 { color: #1e3d59 !important; text-align: center; }
         .whatsapp-btn {
             position: fixed; bottom: 20px; right: 20px; background-color: #25d366;
             color: white !important; border-radius: 50px; padding: 12px 20px;
@@ -103,7 +116,6 @@ else:
         <a href="https://wa.me/919696159863" class="whatsapp-btn" target="_blank"><span>💬 WhatsApp</span></a>
         """, unsafe_allow_html=True)
 
-    # --- SIDEBAR ---
     with st.sidebar:
         st.success("✅ Premium Active")
         st.info("🚗 CAR MELA Dashboard")
@@ -112,7 +124,6 @@ else:
             st.session_state['paid'] = False
             st.rerun()
 
-    # --- MAIN UI ---
     st.title("🚗 CAR MELA")
     st.markdown(f"<div style='text-align:center;'><b>Managed by: Vikas Mishra</b></div>", unsafe_allow_html=True) 
     st.write(f"<div style='text-align:center; font-size:12px;'>📅 {current_time}</div>", unsafe_allow_html=True)
@@ -120,13 +131,11 @@ else:
     st.markdown("---")
     service_mode = st.radio("Select Quotation Type", ["Vehicle Purchase", "Loan on Vehicle"], horizontal=True)
 
-    # Updated Placeholders
     cust_name = st.text_input("Customer Name", placeholder="e.g. CAR MELA")
-    veh_name = st.text_input("Vehicle Name", placeholder="e.g. TOYOTA FORTUNER / HYUNDAI VERNA")
+    veh_name = st.text_input("Vehicle Name", placeholder="e.g. TOYOTA FORTUNER")
 
     col1, col2 = st.columns(2)
 
-    # --- LOGIC & INPUTS ---
     if service_mode == "Vehicle Purchase":
         with col1:
             price = st.number_input("Vehicle Price (Rs)", value=None, placeholder="Enter Price...")
@@ -155,7 +164,6 @@ else:
         loan_amt = (l_amt or 0) + (ins_ch or 0) + (pass_ch or 0) + (trans_ch or 0) + (hp_term or 0) + (hp_add or 0) + (oth_ch or 0)
         pdf_labels = [("Loan Amount", l_amt or 0), ("Ins/Pass/Trans", (ins_ch or 0)+(pass_ch or 0)+(trans_ch or 0)), ("HP Term/Add", (hp_term or 0)+(hp_add or 0)), ("Other Charges", oth_ch or 0)]
 
-    # --- LIVE EMI PREVIEW ---
     st.markdown("---")
     st.subheader(f"📊 Live EMI Preview")
     if loan_amt > 0:
@@ -165,10 +173,9 @@ else:
             for m, col in zip(all_tenures[i:i+4], cols):
                 if int_type == "Flat Rate": emi = (loan_amt + (loan_amt * roi * (m/12) / 100)) / m
                 else: r = roi / (12 * 100); emi = (loan_amt * r * (1 + r)**m) / ((1 + r)**m - 1)
-                col.metric(f"{m} Mo", f"₹{emi:,.0f}/m")
+                col.metric(f"{m} Mo", f"₹{emi:,.0f}")
     else: st.info("Enter values to see EMI preview.")
 
-    # --- PDF GENERATION ---
     if st.button("Generate Premium PDF Quotation"):
         if not cust_name or loan_amt == 0: st.error("Please fill details!")
         else:
