@@ -21,17 +21,6 @@ st.markdown("""
     section[data-testid="stSidebar"] { width: 240px !important; }
     .main .block-container { padding-top: 1.5rem; padding-bottom: 1rem; }
     .stApp { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
-    .rgb-box {
-        padding: 8px; background: white; border-radius: 10px;
-        text-align: center; border: 3px solid;
-        animation: rgb-anim 4s linear infinite; margin-bottom: 10px;
-    }
-    @keyframes rgb-anim {
-        0% { border-color: #ff0000; }
-        33% { border-color: #00ff00; }
-        66% { border-color: #0000ff; }
-        100% { border-color: #ff0000; }
-    }
     h1 { color: #1e3d59 !important; text-align: center; margin-bottom: 0px; }
     .whatsapp-btn {
         position: fixed; bottom: 20px; right: 20px; background-color: #25d366;
@@ -43,20 +32,9 @@ st.markdown("""
     <a href="https://wa.me/919696159863" class="whatsapp-btn" target="_blank"><span>💬 WhatsApp</span></a>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ADDRESS & QR (BLANK QR) ---
+# --- SIDEBAR (QR AND ADDRESS REMOVED AS REQUESTED) ---
 with st.sidebar:
-    st.markdown('<div class="rgb-box"><b style="font-size: 13px; color: #1e3d59;">SCAN QR</b></div>', unsafe_allow_html=True)
-    qr_side = qrcode.QRCode(version=1, box_size=4, border=1)
-    qr_side.add_data(" ") # Blank Data for QR
-    qr_side.make(fit=True)
-    buf_side = io.BytesIO()
-    qr_side.make_image(fill_color="#1e3d59", back_color="white").save(buf_side, format='PNG')
-    col_l, col_m, col_r = st.columns([1, 3, 1])
-    with col_m: st.image(buf_side, use_container_width=True)
-    st.markdown("""
-        <div style="background:#1e3d59; color:white; padding:10px; border-radius:8px; font-size:10px; line-height:1.4;">
-        <b>ADDRESS:....................................</b><br>
-        </div>""", unsafe_allow_html=True)
+    st.info("🚗 CAR MELA Dashboard")
 
 # --- MAIN UI ---
 st.title("🚗 CAR MELA")
@@ -66,8 +44,9 @@ st.write(f"<div style='text-align:center; font-size:12px;'>📅 {current_time}</
 st.markdown("---")
 service_mode = st.radio("Select Quotation Type", ["Vehicle Purchase", "Loan on Vehicle"], horizontal=True)
 
-cust_name = st.text_input("Customer Name", placeholder="e.g. VIKAS MISHRA")
-veh_name = st.text_input("Vehicle Name", placeholder="e.g. PIAGGIO / APE")
+# Updated Placeholders
+cust_name = st.text_input("Customer Name", placeholder="e.g. CAR MELA")
+veh_name = st.text_input("Vehicle Name", placeholder="e.g. TOYOTA FORTUNER / HYUNDAI VERNA")
 
 col1, col2 = st.columns(2)
 
@@ -117,17 +96,18 @@ else: st.info("Enter values to see EMI preview.")
 if st.button("Generate Premium PDF Quotation"):
     if not cust_name or loan_amt == 0: st.error("Please fill details!")
     else:
+        # QR Code with Dash
         qr_buf = io.BytesIO()
-        qrcode.make(" ").save(qr_buf, format='PNG') # Blank QR for PDF
+        qrcode.make("----------").save(qr_buf, format='PNG') 
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=A4)
         
-        # Header (Address Removed)
+        # Header (Agarwal Enterprise & Address removed, replaced with dash)
         c.setFillColor(colors.HexColor("#1e3d59")); c.rect(0, 740, 600, 110, fill=1)
         c.setFillColor(colors.white); c.setFont("Helvetica-Bold", 28); c.drawCentredString(300, 805, "CAR MELA")
-        c.setFont("Helvetica-Bold", 16); c.drawCentredString(300, 785, "AGARWAL ENTERPRISE")
+        c.setFont("Helvetica-Bold", 16); c.drawCentredString(300, 785, "....................")
         c.setFont("Helvetica-Oblique", 9)
-        c.drawCentredString(300, 770, " ") # Address removed from header
+        c.drawCentredString(300, 770, "....................................................................................................")
         
         # Details
         c.setFillColor(colors.black); c.setFont("Helvetica-Bold", 12)
@@ -168,9 +148,9 @@ if st.button("Generate Premium PDF Quotation"):
         c.setFont("Helvetica-Oblique", 9)
         c.drawString(50, 122, f"* This is a computer-generated quotation based on {int_type.lower()}.") 
         
-        # Signature logic
+        # Signature logic updated
         c.setFont("Helvetica-Bold", 12)
-        c.drawRightString(540, 85, "FOR CAR MELA")
+        c.drawRightString(540, 85, "FOR, CAR MELA")
         c.drawRightString(540, 65, "Authorized Signature")
 
         c.save(); st.success("Quotation Ready!")
