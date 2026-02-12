@@ -43,11 +43,11 @@ st.markdown("""
     <a href="https://wa.me/919696159863" class="whatsapp-btn" target="_blank"><span>💬 WhatsApp</span></a>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ADDRESS & QR ---
+# --- SIDEBAR ADDRESS & QR (BLANK QR) ---
 with st.sidebar:
-    st.markdown('<div class="rgb-box"><b style="font-size: 13px; color: #1e3d59;">SCAN FOR ADDRESS</b></div>', unsafe_allow_html=True)
+    st.markdown('<div class="rgb-box"><b style="font-size: 13px; color: #1e3d59;">SCAN QR</b></div>', unsafe_allow_html=True)
     qr_side = qrcode.QRCode(version=1, box_size=4, border=1)
-    qr_side.add_data("https://share.google/2Cs3iSUypf5Lf9PpS")
+    qr_side.add_data(" ") # Blank Data for QR
     qr_side.make(fit=True)
     buf_side = io.BytesIO()
     qr_side.make_image(fill_color="#1e3d59", back_color="white").save(buf_side, format='PNG')
@@ -55,7 +55,7 @@ with st.sidebar:
     with col_m: st.image(buf_side, use_container_width=True)
     st.markdown("""
         <div style="background:#1e3d59; color:white; padding:10px; border-radius:8px; font-size:10px; line-height:1.4;">
-        <b>ADDRESS:....................................</b><br>SHOP NO-6, ASHIRWAD TOWNSHIP-1, NEAR WELCOME PAN CENTRE, BAMROLI ROAD, PANDESARA, SURAT, GUJARAT-394210
+        <b>ADDRESS:....................................</b><br>
         </div>""", unsafe_allow_html=True)
 
 # --- MAIN UI ---
@@ -71,7 +71,7 @@ veh_name = st.text_input("Vehicle Name", placeholder="e.g. PIAGGIO / APE")
 
 col1, col2 = st.columns(2)
 
-# --- ORIGINAL LOGIC & INPUTS ---
+# --- LOGIC & INPUTS ---
 if service_mode == "Vehicle Purchase":
     with col1:
         price = st.number_input("Vehicle Price (Rs)", value=None, placeholder="Enter Price...")
@@ -118,16 +118,16 @@ if st.button("Generate Premium PDF Quotation"):
     if not cust_name or loan_amt == 0: st.error("Please fill details!")
     else:
         qr_buf = io.BytesIO()
-        qrcode.make("https://share.google/2Cs3iSUypf5Lf9PpS").save(qr_buf, format='PNG')
+        qrcode.make(" ").save(qr_buf, format='PNG') # Blank QR for PDF
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=A4)
         
-        # Header
+        # Header (Address Removed)
         c.setFillColor(colors.HexColor("#1e3d59")); c.rect(0, 740, 600, 110, fill=1)
         c.setFillColor(colors.white); c.setFont("Helvetica-Bold", 28); c.drawCentredString(300, 805, "CAR MELA")
         c.setFont("Helvetica-Bold", 16); c.drawCentredString(300, 785, "AGARWAL ENTERPRISE")
         c.setFont("Helvetica-Oblique", 9)
-        c.drawCentredString(300, 770, "SHOP NO-6, ASHIRWAD TOWNSHIP-1, NEAR WELCOME PAN CENTRE, BAMROLI ROAD, PANDESARA, SURAT")
+        c.drawCentredString(300, 770, " ") # Address removed from header
         
         # Details
         c.setFillColor(colors.black); c.setFont("Helvetica-Bold", 12)
