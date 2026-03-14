@@ -11,12 +11,12 @@ import qrcode
 # --- CONFIGURATION (PAYMENT DETAILS) ---
 MY_UPI_ID = "9696159863@ibl" 
 MY_WHATSAPP = "919696159863" 
-SECRET_ACCESS_KEY = "CAR786"  # Updated Key
+SECRET_ACCESS_KEY = "MELA2026"  # Updated New Key
 
-# --- VALIDITY LOGIC (5 DAYS) ---
+# --- VALIDITY LOGIC (30 DAYS / 1 MONTH) ---
 # Setting the activation start date
-START_DATE = datetime.date(2026, 2, 12) 
-EXPIRY_DATE = START_DATE + datetime.timedelta(days=5)
+START_DATE = datetime.date(2025, 2, 12) 
+EXPIRY_DATE = START_DATE + datetime.timedelta(days=30) # Updated to 30 Days
 
 # --- INDIAN TIME SETTING ---
 IST = pytz.timezone('Asia/Kolkata')
